@@ -1,19 +1,51 @@
-// const fs = require('fs/promises')
+import path from "path";
+import fs from "fs/promises";
 
-const listContacts = async () => {}
+const contactsPath = path.resolve("./db/contacts.json");
 
-const getContactById = async (contactId) => {}
+export const listContacts = async () => {
+  const data = await fs.readFile(contactsPath);
+  const contacts = JSON.parse(data);
+  console.table(contacts);
+};
 
-const removeContact = async (contactId) => {}
+export const getContactById = async (contactId) => {
+  const data = await fs.readFile(contactsPath);
+  const contacts = JSON.parse(data);
+  const contact = contacts.find((item) => item.id === contactId);
+  console.log(contact);
+};
 
-const addContact = async (body) => {}
+export const removeContact = async (contactId) => {
+  const data = await fs.readFile(contactsPath);
+  const contacts = JSON.parse(data);
+  const removedContact = contacts.find((item) => item.id === contactId);
+  console.log(removedContact);
+};
 
-const updateContact = async (contactId, body) => {}
+export const addContact = async (name, email, phone) => {
+  const data = await fs.readFile(contactsPath);
+  const contacts = JSON.parse(data);
+  const newContact = {
+    name,
+    email,
+    phone,
+  };
+  contacts.push(newContact);
+  console.log(newContact);
+};
 
-module.exports = {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateContact,
-}
+export const updateContact = async (contactId, updatedData) => {
+  try {
+    const data = await fs.readFile(contactsPath);
+    const contacts = JSON.parse(data);
+    const index = contacts.findIndex((item) => item.id === contactId);
+    if (index !== -1) {
+      contacts[index] = { ...contacts[index], ...updatedData };
+      await fs.writeFile(contactsPath, JSON.stringify(contacts));
+      console.log(contacts[index]);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
