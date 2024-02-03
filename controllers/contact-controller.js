@@ -62,5 +62,3 @@ export async function fav(req, res, next) {
     return res.status(404).json({ message: "404 Not found!" });
   }
 }
-
-export const contactsController = async (req, res, next) => {};
