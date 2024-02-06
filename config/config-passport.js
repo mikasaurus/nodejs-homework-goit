@@ -2,7 +2,6 @@ import passport from "passport";
 import passportJWT from "passport-jwt";
 import "dotenv/config";
 import { User } from "../schema/user.js";
-
 export default function setJWTStrategy() {
   const secret = process.env.SECRET;
   const ExtractJWT = passportJWT.ExtractJwt;

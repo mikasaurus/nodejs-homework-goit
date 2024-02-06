@@ -2,6 +2,7 @@ import { User } from "../schema/user.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import { updateUser } from "../models/users.js";
+const SECRET_JWT = process.env.SECRET;
 
 export const signup = async (req, res) => {
   const { email, password } = req.body;
@@ -16,12 +17,9 @@ export const signup = async (req, res) => {
   return res.status(201).json({ savedUser });
 };
 
-const secret = process.env.SECRET;
-
 export const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  console.log(secret);
   if (!user || !user.validPassword(password)) {
     return res.status(401).json({ message: "Email or password is wrong" });
   }
@@ -29,7 +27,7 @@ export const login = async (req, res) => {
     id: user.id,
     email: user.email,
   };
-  const token = jwt.sign(payload, secret, { expiresIn: "1h" });
+  const token = jwt.sign(payload, SECRET_JWT, { expiresIn: "1h" });
   await updateUser(user.id, { token });
   return res.status(200).json({ token, user });
 };
