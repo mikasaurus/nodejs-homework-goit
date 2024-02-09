@@ -10,13 +10,13 @@ import { auth } from "../../config/auth.js";
 
 const userRouter = express.Router();
 
-userRouter.post("/signup", auth, signup);
+userRouter.post("/signup", signup);
 
 userRouter.post("/login", auth, login);
 
 userRouter.post("/logout", auth, logout);
 
-userRouter.get("/current", currentUser, auth);
+userRouter.get("/current", auth, currentUser);
 
 userRouter.patch("/avatars", updateAvatar, auth);
 
