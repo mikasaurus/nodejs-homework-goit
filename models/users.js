@@ -7,3 +7,7 @@ export const updateUser = async (userId, fields) => {
     { $set: fields }
   );
 };
+
+export const getByMail = (email) => {
+  return User.findOne({ email });
+};
