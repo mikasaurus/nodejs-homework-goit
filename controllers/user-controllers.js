@@ -1,11 +1,12 @@
 import { User } from "../schema/user.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
-import { updateUser } from "../models/users.js";
+import { updateUser, getByMail } from "../models/users.js";
 import gravatar from "gravatar";
 import Jimp from "jimp";
 import fs from "fs/promises";
 import path from "path";
+import { nanoid } from "nanoid";
 const SECRET_JWT = process.env.SECRET;
 
 export const signup = async (req, res) => {
@@ -14,7 +15,8 @@ export const signup = async (req, res) => {
   if (userExists) {
     return res.status(409).json({ message: "Email in use" });
   }
-  const newUser = new User({ email, userAvatar });
+  const newUser = new User({ email, userAvatar, verificationToken: nanoid() });
+  await config(newUser.verificationToken);
   newUser.setPassword(password);
   const userAvatar = gravatar.url(email);
   await newUser.save();
@@ -58,4 +60,35 @@ export const updateAvatar = async (req, res) => {
   const avatarURL = path.join("avatars", filename);
   await User.findByIdAndUpdate(_id, { avatarURL });
   res.status(200).json({ avatarURL });
+};
+
+export const verifyUser = async (req, res) => {
+  const { verificationToken } = req.params;
+  const user = await User.findOne({ verificationToken });
+  await updateUser(user.id, {
+    verificationToken: null,
+    verify: true,
+  });
+  if (user) {
+    res.status(200).json({ message: "Verification successful" });
+  } else {
+    res.status(404).json({ message: "User not found" });
+  }
+};
+
+export const resendMail = async (req, res) => {
+  const { email } = req.body;
+  if (email) {
+    res.status(400).json({ message: "Missing required field emai!" });
+  }
+  await getByMail;
+  if (user.verify) {
+    res.status(400).json({ message: "Verification has already been passed" });
+  }
+  const newToken = nanoid();
+  await updateUser(user.id, {
+    verificationToken: newToken,
+  });
+  await config;
+  res.status(200).json({ message: "Verification email sent" });
 };

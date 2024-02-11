@@ -5,6 +5,8 @@ import {
   logout,
   currentUser,
   updateAvatar,
+  verifyUser,
+  resendMail,
 } from "../../controllers/user-controllers.js";
 import { auth } from "../../config/auth.js";
 
@@ -19,5 +21,9 @@ userRouter.post("/logout", auth, logout);
 userRouter.get("/current", auth, currentUser);
 
 userRouter.patch("/avatars", updateAvatar, auth);
+
+userRouter.get("/verify/:verificationToken", verifyUser);
+
+userRouter.post("/verify", resendMail);
 
 export default userRouter;
